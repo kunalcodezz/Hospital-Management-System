@@ -9,7 +9,9 @@
     "start": "node dist/server.cjs",
     "preview": "vite preview",
     "clean": "rm -rf dist server.cjs",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "seed": "tsx src/backend/config/seed.ts",
+    "test": "tsx tests/api.test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -29,10 +31,12 @@
     "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.546.0",
+    "mongodb-memory-server": "^11.2.0",
     "mongoose": "^9.7.2",
     "motion": "^12.23.24",
     "multer": "^2.2.0",
     "nodemailer": "^9.0.1",
+    "pdfkit": "^0.19.1",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "react-hook-form": "^7.80.0",
@@ -53,6 +57,7 @@
     "@types/multer": "^2.1.0",
     "@types/node": "^22.14.0",
     "@types/nodemailer": "^8.0.1",
+    "@types/pdfkit": "^0.17.6",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
     "tailwindcss": "^4.1.14",

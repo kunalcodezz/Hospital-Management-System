@@ -1,20 +1,27 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(1, "Password is required"),
+  rememberMe: z.boolean().optional(),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function Login() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -24,10 +31,27 @@ export default function Login() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    console.log(data);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    window.location.href = "/patient";
+    try {
+      const response = await axios.post("/api/auth/login", data);
+      
+      const { accessToken, refreshToken, user } = response.data;
+      login(accessToken, refreshToken, user);
+      
+      toast.success("Welcome to MediCare+!");
+
+      // Route mapping
+      if (user.role === "patient") {
+        navigate("/patient");
+      } else if (user.role === "doctor") {
+        navigate("/doctor");
+      } else if (user.role === "admin" || user.role === "superadmin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Invalid credentials");
+    }
   };
 
   return (
@@ -69,7 +93,7 @@ export default function Login() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium text-foreground">Password</label>
-                <Link to="/forgot-password" className="text-sm text-accent hover:underline">
+                <Link to="/forgot-password" style={{ display: "none" }} className="text-sm text-accent hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -80,6 +104,18 @@ export default function Login() {
                 className="w-full h-12 px-4 rounded-xl border border-border bg-transparent focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
               />
               {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="rememberMe"
+                {...register("rememberMe")}
+                className="w-4 h-4 accent-accent"
+              />
+              <label htmlFor="rememberMe" className="text-xs font-semibold text-muted-foreground cursor-pointer">
+                Remember my session
+              </label>
             </div>
 
             <Button type="submit" className="w-full" isLoading={isSubmitting}>

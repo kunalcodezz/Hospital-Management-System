@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, Calendar, FileText, User, Settings, LogOut, Activity, Users, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/context/AuthContext";
 
 interface DashboardLayoutProps {
   role: "patient" | "doctor" | "admin";
@@ -9,6 +10,7 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ role }: DashboardLayoutProps) {
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   const getLinks = () => {
     switch (role) {
@@ -65,7 +67,7 @@ export default function DashboardLayout({ role }: DashboardLayoutProps) {
                 className={cn(
                   "flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-colors",
                   isActive 
-                    ? "bg-muted text-accent font-medium" 
+                    ? "bg-muted text-accent font-semibold" 
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -84,21 +86,25 @@ export default function DashboardLayout({ role }: DashboardLayoutProps) {
             <Settings size={18} />
             Settings
           </Link>
-          <Link
-            to="/"
-            className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors mt-1"
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-600 transition-colors mt-1 cursor-pointer text-left"
           >
             <LogOut size={18} />
             Logout
-          </Link>
+          </button>
           
           <div className="mt-6 flex items-center gap-3 bg-foreground p-3 rounded-2xl text-white">
-            <div className="w-10 h-10 rounded-full bg-slate-700 overflow-hidden shrink-0">
-              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${role}`} alt="Avatar" />
+            <div className="w-10 h-10 rounded-full bg-slate-700 overflow-hidden shrink-0 border border-slate-600">
+              {user?.profilePhoto ? (
+                <img src={user.profilePhoto} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || role}`} alt="Avatar" />
+              )}
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-semibold truncate">Demo {role.charAt(0).toUpperCase() + role.slice(1)}</p>
-              <p className="text-[10px] text-slate-400 truncate">{role}@medicare.com</p>
+              <p className="text-xs font-semibold truncate text-white">{user?.name || `Demo ${role}`}</p>
+              <p className="text-[10px] text-slate-400 truncate">{user?.email || `${role}@medicare.com`}</p>
             </div>
           </div>
         </div>
@@ -113,19 +119,20 @@ export default function DashboardLayout({ role }: DashboardLayoutProps) {
               M+
             </div>
           </div>
-          <div className="flex-1 max-w-md hidden md:flex items-center bg-muted px-4 py-2 rounded-full">
+          <div className="flex-1 max-w-md hidden md:flex items-center bg-muted px-4 py-2 rounded-full cursor-pointer select-none">
             <Activity className="w-4 h-4 text-muted-foreground" />
-            <input type="text" placeholder="Search records, IDs..." className="bg-transparent border-none outline-none text-sm ml-3 w-full" />
+            <span className="text-xs text-muted-foreground ml-3">Press Ctrl + K to toggle command console...</span>
           </div>
           <div className="flex-1 md:hidden" />
           <div className="flex items-center gap-4">
-             <div className="relative p-2 border border-border rounded-xl text-muted-foreground hover:text-foreground cursor-pointer transition-colors hidden sm:block">
+             <Link to="/settings" className="relative p-2 border border-border rounded-xl text-muted-foreground hover:text-foreground cursor-pointer transition-colors hidden sm:block">
                <Activity size={20} />
-               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
-             </div>
-             <button className="bg-gradient-to-br from-accent to-accent-secondary text-white px-5 py-2 rounded-xl text-sm font-semibold shadow-accent hover:brightness-110 transition-all whitespace-nowrap">
-               + Book Appt
-             </button>
+             </Link>
+             <Link to="/patient/appointments" className="hidden sm:block">
+               <button className="bg-gradient-to-br from-accent to-accent-secondary text-white px-5 py-2 rounded-xl text-sm font-semibold shadow-accent hover:brightness-110 transition-all whitespace-nowrap cursor-pointer">
+                 + Book Appt
+               </button>
+             </Link>
           </div>
         </header>
 

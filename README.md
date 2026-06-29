@@ -1,106 +1,301 @@
-# MediCare+ Enterprise SaaS Hospital Management System
+# Hospital Management System
 
-An enterprise-grade, OWASP-compliant, production-hardened Hospital Management SaaS platform built with React, TypeScript, Tailwind CSS, Express, and MongoDB.
+A full-stack Hospital Management System designed to streamline hospital operations by providing a centralized platform for managing patients, doctors, appointments, and administrative tasks. The application offers secure authentication, role-based access control, and an intuitive interface for efficient healthcare management.
 
 ---
 
-## 📂 Folder Structure
+## Overview
 
-```
-├── tests/                  # Integration and API test suite
+This project aims to digitize and simplify hospital workflows by enabling:
+
+- Patient Registration and Authentication
+- Doctor Management
+- Appointment Scheduling
+- Role-Based Access Control
+- Secure Data Management
+- Dashboard for Hospital Administration
+
+---
+
+## Features
+
+### Authentication
+
+- Secure Login and Registration
+- JWT Authentication
+- Password Hashing using bcrypt
+- Protected Routes
+- Session Persistence
+
+### Patient Module
+
+- Register and Login
+- Book Appointments
+- View Appointment History
+- Manage Profile
+
+### Doctor Module
+
+- Manage Availability
+- View Appointment Schedule
+- Access Patient Information
+- Update Appointment Status
+
+### Admin Module
+
+- Manage Patients
+- Manage Doctors
+- Manage Appointments
+- Monitor System Activities
+
+### Additional Features
+
+- Responsive User Interface
+- Form Validation
+- Secure API Endpoints
+- Cloud Image Upload Support
+- Firebase Integration
+- MongoDB Database
+
+---
+
+## Tech Stack
+
+### Frontend
+
+- React
+- TypeScript
+- Vite
+- React Router
+- Context API
+- CSS
+
+### Backend
+
+- Node.js
+- Express.js
+- TypeScript
+
+### Database
+
+- MongoDB
+- Mongoose
+
+### Authentication
+
+- JWT
+- bcrypt
+
+### Cloud Services
+
+- Firebase
+- Cloudinary
+
+---
+
+## Project Structure
+
+```text
+Hospital-Management-System/
+│
+├── assets/
+├── dist/
+├── node_modules/
+├── scripts/
+│
 ├── src/
 │   ├── backend/
-│   │   ├── config/         # Database, Cloudinary, NodeMailer, and Env configuration
-│   │   ├── controllers/    # Business logic layer (Auth, Doctor, Appt, Payments, Stats, Reports)
-│   │   ├── middleware/     # Security headers, rate limiting, and uploads middlewares
-│   │   ├── models/         # Mongoose validation models (User, Patient, Doctor, Appointment, Payment)
-│   │   ├── routes/         # Express Router routing mappings
-│   │   └── validators/     # Zod schema inputs validation rules
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   └── validators/
+│   │
 │   ├── components/
-│   │   ├── layout/         # Navigation portal layouts
-│   │   └── ui/             # Reusable design components (Button, Card, Badge)
-│   ├── context/            # AuthContext.tsx handling JWT & Refresh token interceptors
-│   ├── pages/              # Portal page layouts and sub-views
-│   │   ├── LandingPage.tsx
-│   │   ├── Login.tsx
-│   │   ├── Register.tsx
-│   │   ├── patient/        # Patient Dashboard & Medical Portal
-│   │   ├── doctor/         # Doctor Consultations & Schedule Portal
-│   │   └── admin/          # Admin Analytics, Audit trail, and User Management
+│   ├── context/
+│   ├── lib/
+│   ├── pages/
+│   │
+│   ├── App.tsx
+│   ├── index.css
+│   └── main.tsx
+│
+├── tests/
+├── uploads/
+│
+├── .env
+├── index.html
+├── package.json
+├── package-lock.json
+├── README.md
+├── server.ts
+├── tsconfig.json
+└── vite.config.ts
 ```
 
 ---
 
-## 🛡️ Enterprise Security Implementations (OWASP Top 10)
+## Installation
 
-1. **SQL/NoSQL Injection**: Built-in sanitizing recursive middleware `noSqlSanitizer` blocks queries using operators starting with `$` or containing `.`.
-2. **Broken Access Control & IDOR**: Role-based access control (Patient, Doctor, Admin, SuperAdmin) verified on all backend endpoints; checking resource ownership constraints.
-3. **Helmet Header Protection**: Configured Helmet with Content Security Policy (CSP), Strict-Transport-Security (HSTS), and hides express headers.
-4. **Anti-Brute Force Lockouts**: Express rate limiter limits requests from single IPs; failed login tracking locks accounts temporarily after 5 attempts.
-5. **Secure File Uploads**: Multer limits upload file types to `.pdf`, `.png`, `.jpg`, `.jpeg`, checking MIME types and enforcing a 5MB limit.
+Clone the repository
+
+```bash
+git clone https://github.com/kunalcodezz/Hospital-Management-System.git
+```
+
+Navigate to the project directory
+
+```bash
+cd Hospital-Management-System
+```
+
+Install dependencies
+
+```bash
+npm install
+```
 
 ---
 
-## ⚙️ Environment Variables Setup
+## Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the project root and configure the following variables:
 
 ```env
-PORT=3000
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/medicare
-JWT_SECRET=your_jwt_access_secret_minimum_32_characters
-JWT_REFRESH_SECRET=your_jwt_refresh_secret_minimum_32_characters
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-SMTP_HOST=smtp.mailtrap.io
-SMTP_PORT=2525
-SMTP_USER=your_smtp_user
-SMTP_PASS=your_smtp_pass
-SMTP_FROM=MediCare+ Operations <noreply@medicare.com>
-NODE_ENV=production
+PORT=5000
+
+MONGODB_URI=your_mongodb_connection_string
+
+JWT_SECRET=your_jwt_secret
+
+FIREBASE_PROJECT_ID=
+
+FIREBASE_CLIENT_EMAIL=
+
+FIREBASE_PRIVATE_KEY=
+
+CLOUDINARY_CLOUD_NAME=
+
+CLOUDINARY_API_KEY=
+
+CLOUDINARY_API_SECRET=
 ```
 
 ---
 
-## 🚀 Getting Started
+## Running the Application
 
-### Prerequisites
-- Node.js (v18+)
-- MongoDB (Local or Atlas)
+Start the development server
 
-### Installation
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-2. Run the development server (includes hot-reloading for backend and Vite server):
-   ```bash
-   npm run dev
-   ```
-
-3. Build for production:
-   ```bash
-   npm run build
-   ```
-
-4. Run production server:
-   ```bash
-   npm run start
-   ```
-
----
-
-## 🧪 Testing Guide
-
-Run the automated integration test suite:
 ```bash
-npm run test
+npm run dev
 ```
 
-The test runner:
-- Validates password strength policy filters.
-- Verifies NoSQL parameter stripping.
-- Runs JWT registration, login, and silent refresh flows.
-- Tests IDOR route restriction bounds.
+Build the project
+
+```bash
+npm run build
+```
+
+Run lint checks
+
+```bash
+npm run lint
+```
+
+Run tests
+
+```bash
+npm test
+```
+
+---
+
+## Security
+
+- JWT Authentication
+- Password Encryption with bcrypt
+- Protected API Routes
+- Role-Based Authorization
+- Environment Variable Protection
+- Request Validation
+
+---
+
+## Future Enhancements
+
+- Online Payment Integration
+- Email Notifications
+- SMS Appointment Reminders
+- Medical Records Management
+- Prescription Management
+- Laboratory Reports
+- Real-Time Notifications
+- AI-Based Appointment Recommendations
+- Video Consultation
+- Multi-Hospital Support
+
+---
+
+## Deployment
+
+Frontend
+
+- Vercel
+- Netlify
+- Firebase Hosting
+
+Backend
+
+- Render
+- Railway
+- AWS EC2
+- DigitalOcean
+
+Database
+
+- MongoDB Atlas
+
+---
+
+## Author
+
+**Kunal Maidkar**
+
+GitHub: https://github.com/kunalcodezz
+
+LinkedIn: Add your LinkedIn profile here
+
+---
+
+## Contributing
+
+Contributions are welcome.
+
+1. Fork the repository
+2. Create a feature branch
+
+```bash
+git checkout -b feature-name
+```
+
+3. Commit your changes
+
+```bash
+git commit -m "Add feature"
+```
+
+4. Push to your branch
+
+```bash
+git push origin feature-name
+```
+
+5. Open a Pull Request
+
+---
+
+## License
+
+This project is licensed under the MIT License.

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "motion/react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Calendar, Clock, User, X, Check, Clipboard, Play, UserX, UserCheck, AlertCircle } from "lucide-react";
+import { ClockTimePicker } from "@/components/ui/ClockTimePicker";
 
 interface Appointment {
   _id: string;
@@ -227,7 +229,7 @@ export default function Schedule() {
                   <div key={app._id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-border rounded-xl gap-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500 font-bold shrink-0">
-                        {app.patientId?.name.split(" ").map(n => n[0]).join("")}
+                        {(app.patientId?.name || "").split(" ").map(n => n[0]).join("")}
                       </div>
                       <div>
                         <p className="font-bold text-sm text-foreground">{app.patientId?.name}</p>
@@ -289,23 +291,19 @@ export default function Schedule() {
 
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-muted-foreground uppercase">Start Time (HH:MM)</label>
-                  <input
-                    type="text"
-                    placeholder="09:00"
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase">Start Time</label>
+                  <ClockTimePicker
                     value={newStart}
-                    onChange={(e) => setNewStart(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-border bg-transparent text-xs text-foreground"
+                    onChange={(time) => setNewStart(time)}
+                    placeholder="Start"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-muted-foreground uppercase">End Time (HH:MM)</label>
-                  <input
-                    type="text"
-                    placeholder="17:00"
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase">End Time</label>
+                  <ClockTimePicker
                     value={newEnd}
-                    onChange={(e) => setNewEnd(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-border bg-transparent text-xs text-foreground"
+                    onChange={(time) => setNewEnd(time)}
+                    placeholder="End"
                   />
                 </div>
               </div>

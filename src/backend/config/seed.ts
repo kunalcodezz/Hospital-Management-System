@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { mongoose } from "./db";
 import bcrypt from "bcryptjs";
 import { User } from "../models/User";
 import { PatientProfile } from "../models/PatientProfile";
@@ -33,12 +33,13 @@ async function seed() {
     console.log("Generating secure passwords...");
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash("Password123!", salt);
+    const adminPasswordHash = await bcrypt.hash("Pass@123", salt);
 
     console.log("Seeding Admin accounts...");
     const admin = new User({
-      name: "MediCare Supervisor",
-      email: "admin@medicare.com",
-      password: passwordHash,
+      name: "ADMIN",
+      email: "Admin01@gmail.com",
+      password: adminPasswordHash,
       role: "admin",
       emailVerified: true
     });

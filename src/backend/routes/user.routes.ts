@@ -19,6 +19,6 @@ router.put("/profile/patient", requireRole(["patient"]), updatePatientProfile);
 router.post("/photo", upload.single("photo"), uploadPhoto);
 router.get("/patients", requireRole(["admin", "superadmin"]), getAllPatients);
 router.get("/logs", requireRole(["admin", "superadmin"]), getActivityLogs);
-router.delete("/:id", requireRole(["superadmin"]), deleteUser);
+router.delete("/:id", requireRole(["admin", "superadmin"]), deleteUser);
 
 export default router;

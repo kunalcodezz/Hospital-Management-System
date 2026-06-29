@@ -19,8 +19,20 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, isAuthenticated, user, loading } = useAuth();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (!loading && isAuthenticated && user) {
+      if (user.role === "patient") {
+        navigate("/patient");
+      } else if (user.role === "doctor") {
+        navigate("/doctor");
+      } else if (user.role === "admin" || user.role === "superadmin") {
+        navigate("/admin");
+      }
+    }
+  }, [isAuthenticated, user, loading, navigate]);
 
   const {
     register,
@@ -29,6 +41,14 @@ export default function Login() {
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+      </div>
+    );
+  }
 
   const onSubmit = async (data: LoginFormValues) => {
     try {

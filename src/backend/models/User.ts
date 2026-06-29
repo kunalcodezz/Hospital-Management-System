@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { mongoose } from "../config/db";
 
 const UserSchema = new mongoose.Schema({
   name: { 
@@ -48,7 +48,7 @@ const UserSchema = new mongoose.Schema({
   
   passwordChangedAt: { 
     type: Date, 
-    default: Date.now 
+    default: () => new Date() 
   },
   passwordResetToken: { 
     type: String 
@@ -72,9 +72,9 @@ const UserSchema = new mongoose.Schema({
   
   createdAt: { 
     type: Date, 
-    default: Date.now 
+    default: () => new Date() 
   }
 });
 
-export const User = mongoose.models.User || mongoose.model("User", UserSchema);
+export const User = mongoose.model("User", UserSchema);
 export default User;

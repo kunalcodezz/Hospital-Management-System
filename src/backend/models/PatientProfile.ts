@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { mongoose } from "../config/db";
 
 const PatientProfileSchema = new mongoose.Schema({
   userId: { 
@@ -71,5 +71,5 @@ PatientProfileSchema.pre("save", async function () {
   }
 });
 
-export const PatientProfile = mongoose.models.PatientProfile || mongoose.model("PatientProfile", PatientProfileSchema);
+export const PatientProfile = mongoose.model("PatientProfile", PatientProfileSchema);
 export default PatientProfile;

@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Activity, Search, RefreshCw, Download, ArrowLeft, ArrowRight, ShieldCheck, ShieldAlert } from "lucide-react";
+import { Activity, Search, RefreshCw, Download, ArrowLeft, ArrowRight, ShieldCheck, ShieldAlert, Loader2 } from "lucide-react";
 
 interface Log {
   _id: string;

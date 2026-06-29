@@ -26,10 +26,13 @@ export async function getDoctors(req: Request, res: Response, next: NextFunction
 
     let doctorProfiles = await DoctorProfile.find(filter).populate("userId", "name email profilePhoto");
 
+    // Filter out orphaned profiles where the User account was deleted
+    doctorProfiles = doctorProfiles.filter((profile: any) => profile.userId !== null && profile.userId !== undefined);
+
     if (search) {
       const searchStr = String(search).toLowerCase();
       doctorProfiles = doctorProfiles.filter((profile: any) => 
-        profile.userId && profile.userId.name.toLowerCase().includes(searchStr)
+        profile.userId.name.toLowerCase().includes(searchStr)
       );
     }
 
@@ -60,7 +63,7 @@ export async function getDoctorProfile(req: Request, res: Response, next: NextFu
       }
     }
 
-    if (!profile) {
+    if (!profile || !profile.userId) {
       throw new ApiError(404, "Doctor profile not found");
     }
 

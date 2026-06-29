@@ -220,8 +220,8 @@ export async function getAppointmentById(req: Request, res: Response, next: Next
 
     // Verify ownership (IDOR check)
     if (
-      req.user.role === "patient" && appointment.patientId._id.toString() !== req.user.id &&
-      req.user.role === "doctor" && appointment.doctorId._id.toString() !== req.user.id
+      (req.user.role === "patient" && appointment.patientId._id.toString() !== req.user.id) ||
+      (req.user.role === "doctor" && appointment.doctorId._id.toString() !== req.user.id)
     ) {
       throw new ApiError(403, "Access denied: you do not have permission to view this resource");
     }
@@ -384,8 +384,8 @@ export async function getInvoicePDF(req: Request, res: Response, next: NextFunct
 
     // IDOR check
     if (
-      req.user.role === "patient" && appointment.patientId._id.toString() !== req.user.id &&
-      req.user.role === "doctor" && appointment.doctorId._id.toString() !== req.user.id
+      (req.user.role === "patient" && appointment.patientId._id.toString() !== req.user.id) ||
+      (req.user.role === "doctor" && appointment.doctorId._id.toString() !== req.user.id)
     ) {
       throw new ApiError(403, "Access denied");
     }
@@ -398,11 +398,11 @@ export async function getInvoicePDF(req: Request, res: Response, next: NextFunct
       `Payment Status: ${payment.paymentStatus.toUpperCase()}`,
       "",
       "## Patient Information",
-      `Name: ${appointment.patientId.name}`,
-      `Email: ${appointment.patientId.email}`,
+      `Name: ${(appointment.patientId as any).name}`,
+      `Email: ${(appointment.patientId as any).email}`,
       "",
       "## Booking Summary",
-      `Doctor: ${appointment.doctorId.name}`,
+      `Doctor: ${(appointment.doctorId as any).name}`,
       `Appointment Date: ${new Date(appointment.date).toLocaleDateString()}`,
       `Time Slot: ${appointment.time}`,
       "",
@@ -436,8 +436,8 @@ export async function getPrescriptionPDF(req: Request, res: Response, next: Next
 
     // IDOR check
     if (
-      req.user.role === "patient" && appointment.patientId._id.toString() !== req.user.id &&
-      req.user.role === "doctor" && appointment.doctorId._id.toString() !== req.user.id
+      (req.user.role === "patient" && appointment.patientId._id.toString() !== req.user.id) ||
+      (req.user.role === "doctor" && appointment.doctorId._id.toString() !== req.user.id)
     ) {
       throw new ApiError(403, "Access denied");
     }
@@ -445,8 +445,8 @@ export async function getPrescriptionPDF(req: Request, res: Response, next: Next
     const lines = [
       `Appointment Ref: ${appointment._id}`,
       `Date: ${new Date(appointment.date).toLocaleDateString()}`,
-      `Attending Physician: ${appointment.doctorId.name}`,
-      `Patient Name: ${appointment.patientId.name}`,
+      `Attending Physician: ${(appointment.doctorId as any).name}`,
+      `Patient Name: ${(appointment.patientId as any).name}`,
       "",
       "## Diagnosed Findings",
       appointment.diagnosis || "No specific diagnosis logged.",
@@ -478,8 +478,8 @@ export async function getAppointmentSlip(req: Request, res: Response, next: Next
 
     // IDOR check
     if (
-      req.user.role === "patient" && appointment.patientId._id.toString() !== req.user.id &&
-      req.user.role === "doctor" && appointment.doctorId._id.toString() !== req.user.id
+      (req.user.role === "patient" && appointment.patientId._id.toString() !== req.user.id) ||
+      (req.user.role === "doctor" && appointment.doctorId._id.toString() !== req.user.id)
     ) {
       throw new ApiError(403, "Access denied");
     }
@@ -491,11 +491,11 @@ export async function getAppointmentSlip(req: Request, res: Response, next: Next
       `Scheduled Time: ${appointment.time}`,
       "",
       "## Provider Details",
-      `Doctor Name: ${appointment.doctorId.name}`,
+      `Doctor Name: ${(appointment.doctorId as any).name}`,
       "",
       "## Patient Details",
-      `Patient Name: ${appointment.patientId.name}`,
-      `Email: ${appointment.patientId.email}`,
+      `Patient Name: ${(appointment.patientId as any).name}`,
+      `Email: ${(appointment.patientId as any).email}`,
       "",
       "## Check-in Instructions",
       "- Please arrive at least 15 minutes before your scheduled slot.",

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { mongoose } from "../config/db";
 
 const AvailabilitySlotSchema = new mongoose.Schema({
   dayOfWeek: { 
@@ -81,5 +81,5 @@ const DoctorProfileSchema = new mongoose.Schema({
   }
 });
 
-export const DoctorProfile = mongoose.models.DoctorProfile || mongoose.model("DoctorProfile", DoctorProfileSchema);
+export const DoctorProfile = mongoose.model("DoctorProfile", DoctorProfileSchema);
 export default DoctorProfile;

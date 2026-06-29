@@ -295,8 +295,8 @@ export function AdminLogs() {
   });
 
   const filteredLogs = logsData?.filter((l: any) =>
-    l.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    l.details.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (l.action || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (l.details || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
     (l.userId?.email || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 

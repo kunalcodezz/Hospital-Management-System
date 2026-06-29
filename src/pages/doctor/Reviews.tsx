@@ -94,7 +94,7 @@ export default function Reviews() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-xs">
-                    {f.patientName.split(" ").map(n => n[0]).join("")}
+                    {(f.patientName || "").split(" ").map(n => n[0]).join("")}
                   </div>
                   <div>
                     <p className="text-xs font-bold text-foreground">{f.patientName}</p>

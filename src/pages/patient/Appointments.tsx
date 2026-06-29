@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { motion } from "motion/react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Calendar, Clock, User, ChevronRight, CheckCircle, RefreshCw, X, Receipt, Activity, AlertCircle } from "lucide-react";
+import { ClockTimePicker } from "@/components/ui/ClockTimePicker";
 
 interface Appointment {
   _id: string;
@@ -300,13 +302,11 @@ export default function Appointments() {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-semibold text-muted-foreground">Preferred Time (HH:MM)</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 10:30"
+                  <label className="text-xs font-semibold text-muted-foreground">Preferred Time</label>
+                  <ClockTimePicker
                     value={selectedTime}
-                    onChange={(e) => setSelectedTime(e.target.value)}
-                    className="w-full h-11 px-4 rounded-xl border border-border bg-transparent text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                    onChange={(time) => setSelectedTime(time)}
+                    placeholder="Pick a time"
                   />
                 </div>
               </div>

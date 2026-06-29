@@ -19,6 +19,7 @@ interface AuthContextType {
   updateUser: (user: User) => void;
   isAuthenticated: boolean;
   refreshUserData: () => Promise<void>;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -42,18 +43,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const handleForceLogout = () => {
+    setToken(null);
+    setRefreshToken(null);
+    setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    delete axios.defaults.headers.common["Authorization"];
+    
+    const publicRoutes = ["/", "/login", "/register", "/forgot-password", "/reset-password", "/verify-email"];
+    const isPublicRoute = publicRoutes.includes(window.location.pathname);
+    if (!isPublicRoute) {
+      window.location.href = "/login";
+    }
+  };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    const storedRefreshToken = localStorage.getItem("refreshToken");
-    const storedUser = localStorage.getItem("user");
-    
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setRefreshToken(storedRefreshToken);
-      setUser(JSON.parse(storedUser));
-    }
-
     // Setup Response Interceptor to handle automatic silent token refreshes on 401
     const interceptor = axios.interceptors.response.use(
       (response) => response,
@@ -84,21 +92,82 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     );
 
+    const initAuth = async () => {
+      const storedToken = localStorage.getItem("token");
+      const storedRefreshToken = localStorage.getItem("refreshToken");
+      
+      if (storedToken) {
+        try {
+          const res = await axios.get("/api/users/me", {
+            headers: { Authorization: `Bearer ${storedToken}` }
+          });
+          if (res.data.success) {
+            const u = res.data.user;
+            const normalizedUser: User = {
+              id: u._id || u.id,
+              name: u.name,
+              email: u.email,
+              role: u.role,
+              emailVerified: u.emailVerified
+            };
+            setToken(storedToken);
+            setRefreshToken(storedRefreshToken);
+            setUser(normalizedUser);
+            localStorage.setItem("user", JSON.stringify(normalizedUser));
+          } else {
+            handleForceLogout();
+          }
+        } catch (error: any) {
+          console.error("Token verification failed on startup:", error);
+          if (error.response?.status === 401 && storedRefreshToken) {
+            try {
+              const res = await axios.post("/api/auth/refresh", { refreshToken: storedRefreshToken });
+              const newAccessToken = res.data.accessToken;
+              
+              localStorage.setItem("token", newAccessToken);
+              setToken(newAccessToken);
+              setRefreshToken(storedRefreshToken);
+              
+              const meRes = await axios.get("/api/users/me", {
+                headers: { Authorization: `Bearer ${newAccessToken}` }
+              });
+              
+              if (meRes.data.success) {
+                const u = meRes.data.user;
+                const normalizedUser: User = {
+                  id: u._id || u.id,
+                  name: u.name,
+                  email: u.email,
+                  role: u.role,
+                  emailVerified: u.emailVerified
+                };
+                setUser(normalizedUser);
+                localStorage.setItem("user", JSON.stringify(normalizedUser));
+              } else {
+                handleForceLogout();
+              }
+            } catch (refreshErr) {
+              console.error("Token refresh failed on startup:", refreshErr);
+              handleForceLogout();
+            }
+          } else {
+            handleForceLogout();
+          }
+        }
+      } else {
+        setToken(null);
+        setRefreshToken(null);
+        setUser(null);
+      }
+      setLoading(false);
+    };
+
+    initAuth();
+
     return () => {
       axios.interceptors.response.eject(interceptor);
     };
   }, []);
-
-  const handleForceLogout = () => {
-    setToken(null);
-    setRefreshToken(null);
-    setUser(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
-    delete axios.defaults.headers.common["Authorization"];
-    window.location.href = "/login";
-  };
 
   const login = (accessToken: string, newRefreshToken: string, newUser: User) => {
     setToken(accessToken);
@@ -139,8 +208,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const res = await axios.get("/api/users/me");
       if (res.data.success) {
-        setUser(res.data.user);
-        localStorage.setItem("user", JSON.stringify(res.data.user));
+        const u = res.data.user;
+        const normalizedUser: User = {
+          id: u._id || u.id,
+          name: u.name,
+          email: u.email,
+          role: u.role,
+          emailVerified: u.emailVerified
+        };
+        setUser(normalizedUser);
+        localStorage.setItem("user", JSON.stringify(normalizedUser));
       }
     } catch (error) {
       console.error("Failed to refresh user data", error);
@@ -159,6 +236,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         updateUser,
         isAuthenticated: !!token,
         refreshUserData,
+        loading,
       }}
     >
       {children}

@@ -170,8 +170,8 @@ export function DoctorPatients() {
     : [];
 
   const filteredPatients = uniquePatients.filter((p: any) =>
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.email.toLowerCase().includes(searchTerm.toLowerCase())
+    (p.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (p.email || "").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (

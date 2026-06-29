@@ -5,7 +5,7 @@ import { DoctorProfile } from "../models/DoctorProfile";
 import { Payment } from "../models/Payment";
 import { ActivityLog } from "../models/ActivityLog";
 import { ApiError } from "../middleware/error.middleware";
-import mongoose from "mongoose";
+import { mongoose } from "../config/db";
 
 // Helper to convert JSON grids to CSV text
 function jsonToCsv(headers: string[], rows: any[][]): string {

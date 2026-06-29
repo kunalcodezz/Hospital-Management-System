@@ -19,15 +19,26 @@ const registerSchema = z.object({
     .regex(/[a-z]/, "Must contain at least 1 lowercase letter")
     .regex(/[0-9]/, "Must contain at least 1 number")
     .regex(/[^a-zA-Z0-9]/, "Must contain at least 1 special character"),
-  role: z.enum(["patient", "doctor"]),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function Register() {
-  const { login } = useAuth();
+  const { login, isAuthenticated, user, loading } = useAuth();
   const navigate = useNavigate();
   const [passwordValue, setPasswordValue] = useState("");
+
+  React.useEffect(() => {
+    if (!loading && isAuthenticated && user) {
+      if (user.role === "patient") {
+        navigate("/patient");
+      } else if (user.role === "doctor") {
+        navigate("/doctor");
+      } else if (user.role === "admin" || user.role === "superadmin") {
+        navigate("/admin");
+      }
+    }
+  }, [isAuthenticated, user, loading, navigate]);
 
   const {
     register,
@@ -35,8 +46,15 @@ export default function Register() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { role: "patient" },
   });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
+      </div>
+    );
+  }
 
   const getPasswordStrength = (pw: string) => {
     let score = 0;
@@ -52,18 +70,16 @@ export default function Register() {
 
   const onSubmit = async (data: RegisterFormValues) => {
     try {
-      const response = await axios.post("/api/auth/register", data);
+      const response = await axios.post("/api/auth/register", {
+        ...data,
+        role: "patient"
+      });
       
       const { accessToken, refreshToken, user } = response.data;
       login(accessToken, refreshToken, user);
       
       toast.success("Account registered! Please check email to verify.");
-      
-      if (user.role === "patient") {
-        navigate("/patient");
-      } else {
-        navigate("/doctor");
-      }
+      navigate("/patient");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Registration failed");
     }
@@ -94,17 +110,6 @@ export default function Register() {
         <Card className="p-8 shadow-xl">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-foreground">Account Type</label>
-              <select 
-                {...register("role")}
-                className="w-full h-12 px-4 rounded-xl border border-border bg-transparent focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
-              >
-                <option value="patient">Patient</option>
-                <option value="doctor">Doctor</option>
-              </select>
-            </div>
-
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">Full Name</label>
               <input

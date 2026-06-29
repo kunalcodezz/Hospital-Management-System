@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { mongoose } from "../config/db";
 
 const NotificationSchema = new mongoose.Schema({
   userId: { 
@@ -30,5 +30,5 @@ const NotificationSchema = new mongoose.Schema({
   }
 });
 
-export const Notification = mongoose.models.Notification || mongoose.model("Notification", NotificationSchema);
+export const Notification = mongoose.model("Notification", NotificationSchema);
 export default Notification;

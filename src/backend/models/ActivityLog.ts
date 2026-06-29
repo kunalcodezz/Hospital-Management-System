@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { mongoose } from "../config/db";
 
 const ActivityLogSchema = new mongoose.Schema({
   userId: { 
@@ -44,5 +44,5 @@ const ActivityLogSchema = new mongoose.Schema({
   }
 });
 
-export const ActivityLog = mongoose.models.ActivityLog || mongoose.model("ActivityLog", ActivityLogSchema);
+export const ActivityLog = mongoose.model("ActivityLog", ActivityLogSchema);
 export default ActivityLog;

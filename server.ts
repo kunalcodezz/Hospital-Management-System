@@ -46,13 +46,14 @@ async function startServer() {
   // Serve uploads folder locally for offline fallbacks
   app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
-  // Global Rate Limiting for standard API routes
-  const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 150,
-    message: { success: false, message: "Too many requests from this IP, please try again later." }
-  });
-  app.use("/api", limiter);
+  // Global Rate Limiting - DISABLED FOR TESTING
+  // TODO: Uncomment before production deployment
+  // const limiter = rateLimit({
+  //   windowMs: 15 * 60 * 1000,
+  //   max: 150,
+  //   message: { success: false, message: "Too many requests from this IP, please try again after 15 minutes." }
+  // });
+  // app.use("/api", limiter);
 
   // Connect to Database
   await connectDB();

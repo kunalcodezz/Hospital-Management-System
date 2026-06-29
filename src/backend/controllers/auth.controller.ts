@@ -48,8 +48,31 @@ export async function register(req: Request, res: Response, next: NextFunction) 
     const validated = registerSchema.parse(req.body);
     const { name, email, password, role } = validated;
 
+    // If registering a non-patient, enforce administrator authorization
+    if (role && role !== "patient") {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        throw new ApiError(401, "Authentication required to register non-patient accounts");
+      }
+      const token = authHeader.split(" ")[1];
+      try {
+        const decoded = jwt.verify(token, env.JWT_SECRET) as {
+          id: string;
+          role: "patient" | "doctor" | "admin" | "superadmin";
+        };
+        if (decoded.role !== "admin" && decoded.role !== "superadmin") {
+          throw new ApiError(403, "Access denied: only administrators can create doctor or administrator accounts");
+        }
+      } catch (error: any) {
+        if (error.name === "TokenExpiredError") {
+          throw new ApiError(401, "Access token expired");
+        }
+        throw new ApiError(401, "Invalid access token");
+      }
+    }
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       await logActivity(null, req.ip || "127.0.0.1", "failed_login_attempt", "failed", `Registration failed: email ${email} already exists`);
       throw new ApiError(400, "User already exists with this email address");
@@ -66,7 +89,7 @@ export async function register(req: Request, res: Response, next: NextFunction) 
     // Create user
     const user = new User({
       name,
-      email,
+      email: email.toLowerCase(),
       password: hashedPassword,
       role,
       emailVerificationToken: verificationToken,
@@ -127,14 +150,14 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     const validated = loginSchema.parse(req.body);
     const { email, password, rememberMe } = validated;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       throw new ApiError(400, "Invalid credentials");
     }
 
     // Check account lockout
-    if (user.lockUntil && user.lockUntil > new Date()) {
-      const remainingMinutes = Math.ceil((user.lockUntil.getTime() - Date.now()) / 60000);
+    if (user.lockUntil && new Date(user.lockUntil) > new Date()) {
+      const remainingMinutes = Math.ceil((new Date(user.lockUntil).getTime() - Date.now()) / 60000);
       await logActivity(user._id, req.ip || "127.0.0.1", "failed_login_attempt", "failed", `Blocked login: account locked for ${remainingMinutes} min`);
       throw new ApiError(403, `Account is temporarily locked. Try again in ${remainingMinutes} minutes.`);
     }
@@ -157,7 +180,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
     // Check Password Expiration (warn if password is > 90 days old)
     const ninetyDays = 90 * 24 * 60 * 60 * 1000;
-    const passwordExpired = user.passwordChangedAt && (Date.now() - user.passwordChangedAt.getTime() > ninetyDays);
+    const passwordExpired = user.passwordChangedAt && (Date.now() - new Date(user.passwordChangedAt).getTime() > ninetyDays);
 
     // Reset failed counter
     user.failedLoginAttempts = 0;
@@ -264,7 +287,7 @@ export async function forgotPassword(req: Request, res: Response, next: NextFunc
     const validated = forgotPasswordSchema.parse(req.body);
     const { email } = validated;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       // Return 200 to prevent user enumeration attacks
       return res.json({
@@ -349,8 +372,8 @@ export async function resetPassword(req: Request, res: Response, next: NextFunct
 export async function verifyEmail(req: Request, res: Response, next: NextFunction) {
   try {
     const { token } = req.query;
-    if (!token) {
-      throw new ApiError(400, "Verification token is required");
+    if (!token || typeof token !== "string") {
+      throw new ApiError(400, "Verification token is required and must be a string");
     }
 
     const user = await User.findOne({

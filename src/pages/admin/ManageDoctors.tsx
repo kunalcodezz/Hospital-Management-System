@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "motion/react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -81,19 +82,7 @@ export default function ManageDoctors() {
         consultationFee,
       }, {
         headers: {
-          // Temporarily authenticate request as the newly created user to edit profile,
-          // or we can allow admins to update profiles.
-          // In our doctor controller, only doctor can edit "/profile/me".
-          // So we can let the backend do register, and since register returns token,
-          // we can just send request with the new token or admin override.
-          // Since admin override handles updates, let's look: our doctor update requires doctor role.
-          // To update it cleanly, our register backend already populates defaults,
-          // and we can update via a dedicated doctor edit endpoint or simulate it.
-          // Alternatively, let's log in as that user, update it, and log back in,
-          // or we can write a simple endpoint, or just register the doctor (which creates the profile).
-          // Let's call standard registration. Register already handles creating the profile defaults!
-          // We can also allow the newly registered doctor to set details upon first login,
-          // or admin can send update requests. Let's just create the doctor account:
+          Authorization: `Bearer ${regRes.data.accessToken}`
         }
       });
 
@@ -107,7 +96,10 @@ export default function ManageDoctors() {
       
       fetchDoctors();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Registration failed. Ensure password strength.");
+      const errorMsg = err.response?.data?.errors?.map((e: any) => e.message).join(", ") ||
+                       err.response?.data?.message ||
+                       "Registration failed. Ensure password strength.";
+      toast.error(errorMsg);
     } finally {
       setIsSubmitting(false);
     }
@@ -126,8 +118,8 @@ export default function ManageDoctors() {
   };
 
   const filteredDoctors = doctors.filter(doc => 
-    doc.userId?.name.toLowerCase().includes(search.toLowerCase()) ||
-    doc.department.toLowerCase().includes(search.toLowerCase())
+    (doc.userId?.name || "").toLowerCase().includes(search.toLowerCase()) ||
+    (doc.department || "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -245,6 +237,9 @@ export default function ManageDoctors() {
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full h-11 px-4 rounded-xl border border-border bg-transparent text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent"
                 />
+                <p className="text-[10px] text-muted-foreground mt-1">
+                  Must be 8+ characters, with at least 1 uppercase, 1 lowercase, 1 number, and 1 special character.
+                </p>
               </div>
 
               <div className="space-y-1">

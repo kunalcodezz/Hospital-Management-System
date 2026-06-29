@@ -70,8 +70,8 @@ export default function ManagePatients() {
   };
 
   const filteredPatients = patients.filter(p => 
-    p.userId?.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.userId?.email.toLowerCase().includes(search.toLowerCase())
+    (p.userId?.name || "").toLowerCase().includes(search.toLowerCase()) ||
+    (p.userId?.email || "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -114,7 +114,7 @@ export default function ManagePatients() {
             <Card key={patient._id} className="p-4 flex items-center justify-between hover:border-accent/30 transition-all cursor-pointer" onClick={() => setSelectedPatient(patient)}>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-xs">
-                  {patient.userId?.name.split(" ").map(n => n[0]).join("")}
+                  {(patient.userId?.name || "").split(" ").map(n => n[0]).join("")}
                 </div>
                 <div>
                   <h3 className="font-bold text-sm text-foreground">{patient.userId?.name}</h3>
@@ -147,7 +147,7 @@ export default function ManagePatients() {
             <h3 className="text-xl font-display text-foreground mb-4">Patient File Summary</h3>
             <div className="flex items-center gap-3 pb-6 border-b border-border mb-6">
               <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold">
-                {selectedPatient.userId?.name.split(" ").map(n => n[0]).join("")}
+                {(selectedPatient.userId?.name || "").split(" ").map(n => n[0]).join("")}
               </div>
               <div>
                 <h4 className="font-bold text-foreground text-sm">{selectedPatient.userId?.name}</h4>

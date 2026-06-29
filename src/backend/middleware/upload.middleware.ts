@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 });
 
 // File filter validation
-const fileFilter = (req: Request, file: Express.RayFile | any, cb: multer.FileFilterCallback) => {
+const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
   const allowedExtensions = [".png", ".jpg", ".jpeg", ".pdf"];
   const allowedMimeTypes = ["image/png", "image/jpeg", "image/jpg", "application/pdf"];
 

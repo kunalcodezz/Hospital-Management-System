@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { mongoose } from "../config/db";
 
 const AppointmentHistorySchema = new mongoose.Schema({
   status: {
@@ -44,5 +44,5 @@ AppointmentSchema.pre("save", async function () {
   }
 });
 
-export const Appointment = mongoose.models.Appointment || mongoose.model("Appointment", AppointmentSchema);
+export const Appointment = mongoose.model("Appointment", AppointmentSchema);
 export default Appointment;

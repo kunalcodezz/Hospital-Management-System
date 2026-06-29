@@ -103,7 +103,7 @@ export default function Patients() {
             vaccinationHistory: [],
           }
         });
-        toast.warn("Patient health card metrics not configured by patient yet.");
+        toast("Patient health card metrics not configured by patient yet.", { icon: "⚠️" });
       }
     } catch (err) {
       console.error(err);
@@ -112,8 +112,8 @@ export default function Patients() {
   };
 
   const filteredPatients = patients.filter(p => 
-    p.patientId?.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.patientId?.email.toLowerCase().includes(search.toLowerCase())
+    (p.patientId?.name || "").toLowerCase().includes(search.toLowerCase()) ||
+    (p.patientId?.email || "").toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -183,7 +183,7 @@ export default function Patients() {
             <h3 className="text-xl font-display text-foreground mb-4">Patient Medical History Card</h3>
             <div className="flex items-center gap-3 pb-6 border-b border-border mb-6">
               <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold">
-                {selectedPatient.patientId?.name.split(" ").map(n => n[0]).join("")}
+                {(selectedPatient.patientId?.name || "").split(" ").map(n => n[0]).join("")}
               </div>
               <div>
                 <h4 className="font-bold text-foreground text-sm">{selectedPatient.patientId?.name}</h4>

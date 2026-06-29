@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { mongoose } from "../config/db";
 
 const PaymentSchema = new mongoose.Schema({
   invoiceNumber: { 
@@ -67,5 +67,5 @@ const PaymentSchema = new mongoose.Schema({
   }
 });
 
-export const Payment = mongoose.models.Payment || mongoose.model("Payment", PaymentSchema);
+export const Payment = mongoose.model("Payment", PaymentSchema);
 export default Payment;

@@ -9,19 +9,19 @@
   --color-foreground: #0F172A;
   --color-muted: #F1F5F9;
   --color-muted-foreground: #64748B;
-  --color-accent: #0052FF;
-  --color-accent-secondary: #4D7CFF;
+  --color-accent: #0D9488;
+  --color-accent-secondary: #14B8A6;
   --color-accent-foreground: #FFFFFF;
   --color-border: #E2E8F0;
   --color-card: #FFFFFF;
-  --color-ring: #0052FF;
+  --color-ring: #0D9488;
 
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
   --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
   --shadow-lg: 0 10px 15px rgba(0,0,0,0.08);
   --shadow-xl: 0 20px 25px rgba(0,0,0,0.1);
-  --shadow-accent: 0 4px 14px rgba(0,82,255,0.25);
-  --shadow-accent-lg: 0 8px 24px rgba(0,82,255,0.35);
+  --shadow-accent: 0 4px 14px rgba(13,148,136,0.25);
+  --shadow-accent-lg: 0 8px 24px rgba(13,148,136,0.35);
 }
 
 @layer base {
@@ -49,7 +49,7 @@
     height: 0.75rem;
     width: 100%;
     border-radius: 0.125rem;
-    background: linear-gradient(to right, rgba(0, 82, 255, 0.15), rgba(77, 124, 255, 0.1));
+    background: linear-gradient(to right, rgba(13, 148, 136, 0.15), rgba(20, 184, 166, 0.1));
   }
   
   .dot-pattern {

@@ -1,199 +1,421 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { motion } from "motion/react";
-import { ArrowRight, Calendar, Activity, Heart, Shield, Stethoscope, Users } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
+import {
+  ArrowRight,
+  Calendar,
+  ClipboardList,
+  UserCog,
+  CreditCard,
+  FlaskConical,
+  Siren,
+  Heart,
+  CheckCircle,
+  Send,
+  Edit3,
+  ChevronRight,
+} from "lucide-react";
+import "./LandingPage.css";
+
+// ─── Star Component ──────────────────────────────────────────────────────────────
+
+function Star() {
+  return (
+    <svg viewBox="0 0 20 20">
+      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+    </svg>
+  );
+}
+
+// ─── Features Data ───────────────────────────────────────────────────────────────
+
+const features = [
+  {
+    icon: Calendar,
+    color: "teal",
+    title: "Appointment Scheduling",
+    desc: "Intuitive calendar management for doctors and automated reminders for patients to reduce no-shows.",
+  },
+  {
+    icon: ClipboardList,
+    color: "sky",
+    title: "Patient Records",
+    desc: "Secure, encrypted storage for comprehensive medical histories, accessible instantly by authorized clinicians.",
+  },
+  {
+    icon: UserCog,
+    color: "slate",
+    title: "Doctor Management",
+    desc: "Manage schedules, specializations, and availability across multiple departments with ease.",
+  },
+  {
+    icon: CreditCard,
+    color: "rose",
+    title: "Billing System",
+    desc: "Automated invoicing, insurance claim processing, and integrated payment gateways for seamless transactions.",
+  },
+  {
+    icon: FlaskConical,
+    color: "emerald",
+    title: "Laboratory Reports",
+    desc: "Direct integration with lab equipment for real-time result updates and digital report distribution.",
+  },
+  {
+    icon: Siren,
+    color: "amber",
+    title: "Emergency Services",
+    desc: "Critical care prioritization and rapid response coordination for life-saving efficiency.",
+  },
+];
+
+// ─── Services Data ───────────────────────────────────────────────────────────────
+
+const services = [
+  {
+    label: "General OPD",
+    desc: "Streamlined outpatient services with minimal wait times and expert consultation across all specialties.",
+    img: "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=480&h=320&fit=crop",
+  },
+  {
+    label: "ICU & Critical Care",
+    desc: "24/7 monitoring with cutting-edge life support systems and highly trained critical care staff.",
+    img: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=480&h=320&fit=crop",
+  },
+  {
+    label: "Pharmacy & Inventory",
+    desc: "Fully automated pharmacy inventory management ensuring 100% medication availability and accuracy.",
+    img: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=480&h=320&fit=crop",
+  },
+  {
+    label: "Laboratory Info System",
+    desc: "Integrated diagnostic workflows that deliver accurate lab results directly to your digital health record.",
+    img: "https://images.unsplash.com/photo-1579165466991-467135ad3110?w=480&h=320&fit=crop",
+  },
+  {
+    label: "Human Resources",
+    desc: "Comprehensive staff management, from recruitment and payroll to performance tracking and training.",
+    img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=480&h=320&fit=crop",
+  },
+  {
+    label: "Radiology & PACS",
+    desc: "Advanced medical imaging with digital archiving and communication for rapid specialist reviews.",
+    img: "https://images.unsplash.com/photo-1530497610245-94d3c16cda28?w=480&h=320&fit=crop",
+  },
+];
+
+// ─── Testimonials Data ───────────────────────────────────────────────────────────
+
+const testimonials = [
+  {
+    quote:
+      "CarePoint has transformed how we manage our patient flow. The intuitive dashboard has saved our staff hours of administrative work every week.",
+    name: "Dr. Robert Chen",
+    role: "Head of Surgery, St. Judes",
+    avatar: "https://i.pravatar.cc/100?img=12",
+  },
+  {
+    quote:
+      "The integration between the laboratory and patient records is seamless. It allows us to make critical decisions faster than ever before.",
+    name: "Dr. Elena Rodriguez",
+    role: "Chief Cardiologist, MedPrime",
+    avatar: "https://i.pravatar.cc/100?img=32",
+  },
+  {
+    quote:
+      "Finally, a medical platform that doesn't feel like a 90s software. It's beautiful, functional, and actually helps us provide better care.",
+    name: "Dr. James Wilson",
+    role: "Pediatrician, City General",
+    avatar: "https://i.pravatar.cc/100?img=59",
+  },
+];
+
+// ─── Main Component ──────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
-  const easeOut = [0.16, 1, 0.3, 1] as const;
-
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 28 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: easeOut } },
-  };
-
-  const stagger = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
-  };
-
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-accent to-accent-secondary flex items-center justify-center text-white font-bold text-xl">
-              M
+    <div style={{ minHeight: "100vh", background: "#fafafa" }}>
+      {/* ═══ Navbar ═══ */}
+      <nav className="lp-nav">
+        <div className="lp-nav-inner">
+          <Link to="/" className="lp-nav-logo">
+            <div className="lp-nav-logo-icon">
+              <Heart size={20} />
             </div>
-            <span className="font-display text-xl tracking-tight">MediCare+</span>
-          </div>
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#services" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Services</a>
-            <a href="#doctors" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Doctors</a>
-            <a href="#testimonials" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Testimonials</a>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link to="/login">
-              <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Sign In</Button>
-            </Link>
-            <Link to="/register">
-              <Button size="sm">Get Started</Button>
-            </Link>
+            <span className="lp-nav-logo-text">CarePoint Health</span>
+          </Link>
+
+          <ul className="lp-nav-links">
+            <li><a href="#" className="active">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#features">Doctors</a></li>
+            <li><a href="#features">Departments</a></li>
+            <li><a href="#testimonials">About</a></li>
+            <li><a href="#cta">Contact</a></li>
+          </ul>
+
+          <div className="lp-nav-actions">
+            <Link to="/auth?mode=login" className="lp-nav-login">Login</Link>
+            <Link to="/auth?mode=signup" className="lp-nav-register">Register</Link>
           </div>
         </div>
       </nav>
 
       <main>
-        {/* Hero Section */}
-        <section className="relative pt-32 pb-20 md:pt-44 md:pb-32 px-6">
-          <div className="absolute top-1/4 -right-1/4 w-[800px] h-[800px] bg-accent/5 rounded-full blur-[150px] pointer-events-none" />
-          <div className="absolute -bottom-1/4 -left-1/4 w-[600px] h-[600px] bg-accent-secondary/5 rounded-full blur-[120px] pointer-events-none" />
-          
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={stagger}
-              className="max-w-2xl"
-            >
-              <motion.div variants={fadeInUp}>
-                <Badge pulsing className="mb-6">Next-Gen Healthcare</Badge>
-              </motion.div>
-              
-              <motion.h1 variants={fadeInUp} className="font-display text-5xl sm:text-6xl lg:text-[5.25rem] leading-[1.05] tracking-tight mb-8">
-                Healthcare that revolves around <span className="gradient-text relative inline-block">you<div className="gradient-underline" /></span>
-              </motion.h1>
-              
-              <motion.p variants={fadeInUp} className="text-lg sm:text-xl text-muted-foreground mb-10 leading-relaxed max-w-xl">
-                Experience a new standard of medical care. Seamless appointments, instant digital records, and world-class specialists at your fingertips.
-              </motion.p>
-              
-              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
-                <Link to="/register">
-                  <Button size="lg" icon={<ArrowRight size={20} />} iconPosition="right" className="w-full sm:w-auto">
-                    Book Appointment
-                  </Button>
+        {/* ═══ Hero Section ═══ */}
+        <section className="lp-hero">
+          <div className="lp-hero-inner">
+            {/* Left Content */}
+            <div>
+              <div className="lp-hero-badge lp-animate-in">
+                <span className="lp-hero-badge-dot" />
+                TRUSTED BY 500+ HOSPITALS WORLDWIDE
+              </div>
+
+              <h1 className="lp-hero-heading lp-animate-in lp-animate-delay-1">
+                Hospital Management made simple for everyone.
+              </h1>
+
+              <p className="lp-hero-subtext lp-animate-in lp-animate-delay-2">
+                Streamline your clinical workflows, manage patient records with precision, and focus on what truly matters: providing exceptional care.
+              </p>
+
+              <div className="lp-hero-buttons lp-animate-in lp-animate-delay-3">
+                <Link to="/auth?mode=signup" className="lp-btn-primary">
+                  Get Started <ArrowRight size={18} />
                 </Link>
-                <Link to="/login">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                    Patient Portal
-                  </Button>
+                <Link to="/auth?mode=login" className="lp-btn-outline">
+                  Book Appointment
                 </Link>
-              </motion.div>
-              
-              <motion.div variants={fadeInUp} className="mt-12 flex items-center gap-6 pt-8 border-t border-border">
-                <div className="flex -space-x-3">
-                  {[1, 2, 3, 4].map((i) => (
-                    <img key={i} src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="User" className="w-10 h-10 rounded-full border-2 border-background" />
-                  ))}
+              </div>
+
+              <div className="lp-hero-stats lp-animate-in lp-animate-delay-4">
+                <div>
+                  <div className="lp-stat-value">500+</div>
+                  <div className="lp-stat-label">Doctors</div>
                 </div>
                 <div>
-                  <div className="flex items-center gap-1 text-accent">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                    ))}
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-1">Trusted by 10,000+ patients</p>
+                  <div className="lp-stat-value">50K+</div>
+                  <div className="lp-stat-label">Patients</div>
                 </div>
-              </motion.div>
-            </motion.div>
-
-            {/* Abstract Graphic */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="hidden lg:block relative h-[600px] w-full"
-            >
-              <div className="absolute inset-0 flex items-center justify-center">
-                {/* Rotating Ring */}
-                <div className="absolute w-[500px] h-[500px] border border-border border-dashed rounded-full animate-[spin_60s_linear_infinite]" />
-                
-                {/* Center Core */}
-                <div className="absolute w-64 h-64 bg-gradient-to-br from-accent/10 to-accent-secondary/20 rounded-full blur-2xl" />
-                
-                {/* Floating Elements */}
-                <motion.div 
-                  animate={{ y: [-10, 10, -10] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute top-20 right-10 bg-card rounded-2xl p-4 shadow-xl border border-border flex items-center gap-4 w-64"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-green-500/10 text-green-500 flex items-center justify-center">
-                    <Calendar size={24} />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold">Appointment Confirmed</p>
-                    <p className="text-xs text-muted-foreground">Today, 10:30 AM</p>
-                  </div>
-                </motion.div>
-
-                <motion.div 
-                  animate={{ y: [15, -15, 15] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                  className="absolute bottom-32 left-0 bg-card rounded-2xl p-4 shadow-xl border border-border flex items-center gap-4 w-60 z-10"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center">
-                    <Activity size={24} />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold">Vitals Normal</p>
-                    <p className="text-xs text-muted-foreground">Updated 2m ago</p>
-                  </div>
-                </motion.div>
-                
-                {/* Main Visual */}
-                <div className="relative w-80 h-[420px] bg-foreground rounded-[2.5rem] shadow-2xl overflow-hidden border-8 border-white dot-pattern flex flex-col justify-between p-6">
-                  <div className="flex justify-between items-center text-white/80">
-                    <Heart size={24} className="text-accent" />
-                    <span className="font-mono text-xs">LIVE</span>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="h-20 bg-white/10 rounded-xl w-full" />
-                    <div className="flex gap-4">
-                      <div className="h-24 bg-accent rounded-xl w-1/2" />
-                      <div className="h-24 bg-white/10 rounded-xl w-1/2" />
-                    </div>
-                  </div>
+                <div>
+                  <div className="lp-stat-value">24/7</div>
+                  <div className="lp-stat-label">Emergency</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
+
+            {/* Right Visual */}
+            <div className="lp-hero-visual lp-animate-in lp-animate-delay-2">
+              {/* Main Card */}
+              <div className="lp-hero-card-main">
+                <div className="lp-hero-card-dots">
+                  <span /><span /><span />
+                </div>
+                <div className="lp-hero-card-placeholder">
+                  <div className="lp-placeholder-block" />
+                  <div className="lp-placeholder-block" />
+                  <div className="lp-placeholder-block" />
+                </div>
+              </div>
+
+              {/* Floating Appointment Card */}
+              <div className="lp-float-appt">
+                <img
+                  src="https://i.pravatar.cc/100?img=47"
+                  alt="Dr. Sarah"
+                  className="lp-float-appt-avatar"
+                />
+                <div>
+                  <div className="lp-float-appt-title">Appt. Scheduled</div>
+                  <div className="lp-float-appt-sub">Dr. Sarah Johnson</div>
+                </div>
+              </div>
+
+              {/* Floating Vitals Card */}
+              <div className="lp-float-vitals">
+                <div className="lp-float-vitals-header">
+                  <span className="lp-float-vitals-title">Patient Vitals</span>
+                  <span className="lp-float-vitals-check">✓</span>
+                </div>
+                <div className="lp-vitals-bar">
+                  <div className="lp-vitals-bar-fill" style={{ width: "72%" }} />
+                </div>
+                <div className="lp-vitals-labels">
+                  <span>BP</span>
+                  <span>72 bpm</span>
+                </div>
+              </div>
+
+              {/* Floating Pen Icon */}
+              <div className="lp-hero-float-pen">
+                <Edit3 size={18} />
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Features Inverted Section */}
-        <section id="services" className="py-28 bg-foreground text-background dot-pattern relative">
-          <div className="max-w-7xl mx-auto px-6 relative z-10">
-            <div className="text-center max-w-2xl mx-auto mb-20">
-              <Badge className="mb-6 border-white/20 bg-white/5 text-white">Why Choose Us</Badge>
-              <h2 className="font-display text-4xl md:text-5xl mb-6 tracking-tight">Excellence in every interaction</h2>
-              <p className="text-lg text-white/60">We've redesigned the healthcare experience from the ground up to be intuitive, transparent, and built around your needs.</p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { icon: Stethoscope, title: "Expert Specialists", desc: "Access to top-tier medical professionals across 20+ specialized departments." },
-                { icon: Shield, title: "Secure Records", desc: "Your medical history is encrypted and accessible only to you and authorized doctors." },
-                { icon: Users, title: "Family Management", desc: "Manage appointments and records for your entire family from a single intuitive dashboard." }
-              ].map((feature, idx) => (
-                <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-8 hover:bg-white/10 transition-colors">
-                  <div className="w-14 h-14 rounded-xl bg-accent flex items-center justify-center text-white mb-6">
-                    <feature.icon size={28} />
+        {/* ═══ Features Section ═══ */}
+        <section id="features" className="lp-features">
+          <div className="lp-features-inner">
+            <h2 className="lp-section-heading">Everything your hospital needs.</h2>
+            <div className="lp-features-grid">
+              {features.map((f, i) => (
+                <div key={i} className="lp-feature-card">
+                  <div className={`lp-feature-icon ${f.color}`}>
+                    <f.icon size={24} />
                   </div>
-                  <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                  <p className="text-white/60 leading-relaxed">{feature.desc}</p>
+                  <h3 className="lp-feature-title">{f.title}</h3>
+                  <p className="lp-feature-desc">{f.desc}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
+
+        {/* ═══ Services Section ═══ */}
+        <section id="services" className="lp-services">
+          <div className="lp-services-inner">
+            <div className="lp-services-header">
+              <div className="lp-services-header-left">
+                <h2>Our Specialized Services</h2>
+                <p>Advanced healthcare infrastructure designed to support every medical specialization with precision and care.</p>
+              </div>
+              <a href="#services" className="lp-services-view-all">
+                View All Services <ChevronRight size={16} />
+              </a>
+            </div>
+
+            <div className="lp-services-grid">
+              {services.map((s, i) => (
+                <div key={i} className="lp-service-card">
+                  <div className="lp-service-img-wrapper">
+                    <img src={s.img} alt={s.label} loading="lazy" />
+                    <div className="lp-service-label">{s.label}</div>
+                  </div>
+                  <div className="lp-service-body">
+                    <p>{s.desc}</p>
+                    <a href="#" className="lp-service-link">
+                      Learn More <ArrowRight size={14} />
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ Testimonials Section ═══ */}
+        <section id="testimonials" className="lp-testimonials">
+          <div className="lp-testimonials-inner">
+            <div className="lp-testimonials-header">
+              <h2>Trusted by Leading Clinicians</h2>
+              <p>Hear from the medical professionals who use CarePoint every day.</p>
+            </div>
+
+            <div className="lp-testimonials-grid">
+              {testimonials.map((t, i) => (
+                <div key={i} className="lp-testimonial-card">
+                  <div className="lp-testimonial-stars">
+                    {[1, 2, 3, 4, 5].map((s) => <Star key={s} />)}
+                  </div>
+                  <p className="lp-testimonial-quote">"{t.quote}"</p>
+                  <div className="lp-testimonial-author">
+                    <img src={t.avatar} alt={t.name} className="lp-testimonial-avatar" />
+                    <div>
+                      <p className="lp-testimonial-name">{t.name}</p>
+                      <p className="lp-testimonial-role">{t.role}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══ CTA Banner ═══ */}
+        <section id="cta" className="lp-cta">
+          <div className="lp-cta-inner">
+            <h2>Ready to modernize your hospital operations?</h2>
+            <p>
+              Join hundreds of leading healthcare facilities and experience the future of clinical management today.
+            </p>
+            <div className="lp-cta-buttons">
+              <Link to="/auth?mode=signup" className="lp-cta-btn-white">
+                Start Free Trial
+              </Link>
+              <a href="#cta" className="lp-cta-btn-outline">
+                Contact Sales
+              </a>
+            </div>
+          </div>
+        </section>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-border py-12 text-center text-muted-foreground">
-        <p>&copy; {new Date().getFullYear()} MediCare+ Inc. All rights reserved.</p>
+      {/* ═══ Footer ═══ */}
+      <footer className="lp-footer">
+        <div className="lp-footer-inner">
+          <div className="lp-footer-grid">
+            {/* Brand Column */}
+            <div className="lp-footer-brand">
+              <div className="lp-footer-brand-name">
+                <div className="lp-nav-logo-icon"><Heart size={16} /></div>
+                <span>CarePoint Health</span>
+              </div>
+              <p>Providing intelligent solutions for the modern healthcare era. Healing simplified.</p>
+              <div className="lp-footer-socials">
+                <a href="#" aria-label="Twitter">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+                </a>
+                <a href="#" aria-label="GitHub">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                </a>
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <div className="lp-footer-col">
+              <h4>Quick Links</h4>
+              <ul>
+                <li><a href="#">Find a Doctor</a></li>
+                <li><a href="#">Book Appointment</a></li>
+                <li><a href="#">Our Departments</a></li>
+                <li><a href="#">Services & Pricing</a></li>
+              </ul>
+            </div>
+
+            {/* Support */}
+            <div className="lp-footer-col">
+              <h4>Support Resources</h4>
+              <ul>
+                <li><a href="#">Patient Portal Help</a></li>
+                <li><a href="#">Staff Training</a></li>
+                <li><a href="#">API Documentation</a></li>
+                <li><a href="#">Knowledge Base</a></li>
+              </ul>
+            </div>
+
+            {/* Newsletter */}
+            <div className="lp-footer-col lp-footer-newsletter">
+              <h4>Newsletter</h4>
+              <p>Stay updated with our latest healthcare insights.</p>
+              <div className="lp-footer-newsletter-input">
+                <input type="email" placeholder="Your Email" />
+                <button aria-label="Subscribe">
+                  <Send size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="lp-footer-bottom">
+            <span>&copy; {new Date().getFullYear()} CarePoint Health. All rights reserved.</span>
+            <div className="lp-footer-bottom-links">
+              <a href="#">Privacy Policy</a>
+              <a href="#">Terms of Service</a>
+              <a href="#">Cookie Settings</a>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );

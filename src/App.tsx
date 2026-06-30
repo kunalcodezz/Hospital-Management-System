@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 
 // Public Pages
 import LandingPage from "./pages/LandingPage";
+import AuthPage from "./pages/AuthPage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -75,8 +76,9 @@ export default function App() {
             <Routes>
               {/* Public Views */}
               <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/login" element={<Navigate to="/auth?mode=login" replace />} />
+              <Route path="/register" element={<Navigate to="/auth?mode=signup" replace />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/verify-email" element={<VerifyEmail />} />

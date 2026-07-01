@@ -1,95 +1,8 @@
 # Hospital Management System
 
-A full-stack Hospital Management System designed to streamline hospital operations by providing a centralized platform for managing patients, doctors, appointments, and administrative tasks. The application offers secure authentication, role-based access control, and an intuitive interface for efficient healthcare management.
+A production-ready full-stack Hospital Management System (HMS) designed to streamline clinical workflows, patient registrations, doctor availabilities, and medical reports.
 
----
-
-## Overview
-
-This project aims to digitize and simplify hospital workflows by enabling:
-
-- Patient Registration and Authentication
-- Doctor Management
-- Appointment Scheduling
-- Role-Based Access Control
-- Secure Data Management
-- Dashboard for Hospital Administration
-
----
-
-## Features
-
-### Authentication
-
-- Secure Login and Registration
-- JWT Authentication
-- Password Hashing using bcrypt
-- Protected Routes
-- Session Persistence
-
-### Patient Module
-
-- Register and Login
-- Book Appointments
-- View Appointment History
-- Manage Profile
-
-### Doctor Module
-
-- Manage Availability
-- View Appointment Schedule
-- Access Patient Information
-- Update Appointment Status
-
-### Admin Module
-
-- Manage Patients
-- Manage Doctors
-- Manage Appointments
-- Monitor System Activities
-
-### Additional Features
-
-- Responsive User Interface
-- Form Validation
-- Secure API Endpoints
-- Cloud Image Upload Support
-- Firebase Integration
-- MongoDB Database
-
----
-
-## Tech Stack
-
-### Frontend
-
-- React
-- TypeScript
-- Vite
-- React Router
-- Context API
-- CSS
-
-### Backend
-
-- Node.js
-- Express.js
-- TypeScript
-
-### Database
-
-- MongoDB
-- Mongoose
-
-### Authentication
-
-- JWT
-- bcrypt
-
-### Cloud Services
-
-- Firebase
-- Cloudinary
+The repository is organized into a decoupled full-stack architecture, enabling standalone deployments of the client side (e.g. on Vercel) and the API server side (e.g. on Render).
 
 ---
 
@@ -98,204 +11,87 @@ This project aims to digitize and simplify hospital workflows by enabling:
 ```text
 Hospital-Management-System/
 │
-├── assets/
-├── dist/
-├── node_modules/
-├── scripts/
+├── frontend/                     # React + Vite Client (Vercel)
+│   ├── src/                      # UI Components, Context, Pages, CSS, Assets
+│   ├── public/                   # Static assets
+│   ├── package.json              # Client dependencies and scripts
+│   ├── vite.config.ts            # Vite config (resolved aliases to src/)
+│   └── .env                      # VITE_API_URL binding
 │
-├── src/
-│   ├── backend/
-│   │   ├── config/
-│   │   ├── controllers/
-│   │   ├── middleware/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   └── validators/
-│   │
-│   ├── components/
-│   ├── context/
-│   ├── lib/
-│   ├── pages/
-│   │
-│   ├── App.tsx
-│   ├── index.css
-│   └── main.tsx
+├── backend/                      # Express + Node + TypeScript Server (Render)
+│   ├── src/                      # Controllers, Models, Routes, Middlewares, Config
+│   ├── uploads/                  # Local uploads storage
+│   ├── tests/                    # Validator unit tests
+│   ├── package.json              # Backend dependencies and scripts
+│   ├── tsconfig.json             # TypeScript server build options
+│   └── .env                      # Database cluster & API secrets
 │
-├── tests/
-├── uploads/
-│
-├── .env
-├── index.html
-├── package.json
-├── package-lock.json
-├── README.md
-├── server.ts
-├── tsconfig.json
-└── vite.config.ts
+├── README.md                     # General workspace documentation
+└── .gitignore                    # Shared VCS ignore configurations
 ```
 
 ---
 
-## Installation
+## Installation & Setup
 
-Clone the repository
-
+### 1. Clone the repository
 ```bash
 git clone https://github.com/kunalcodezz/Hospital-Management-System.git
-```
-
-Navigate to the project directory
-
-```bash
 cd Hospital-Management-System
 ```
 
-Install dependencies
-
+### 2. Frontend Configuration
 ```bash
+cd frontend
 npm install
 ```
-
----
-
-## Environment Variables
-
-Create a `.env` file in the project root and configure the following variables:
-
+Create `frontend/.env`:
 ```env
-PORT=5000
-
-MONGODB_URI=your_mongodb_connection_string
-
-JWT_SECRET=your_jwt_secret
-
-FIREBASE_PROJECT_ID=
-
-FIREBASE_CLIENT_EMAIL=
-
-FIREBASE_PRIVATE_KEY=
-
-CLOUDINARY_CLOUD_NAME=
-
-CLOUDINARY_API_KEY=
-
-CLOUDINARY_API_SECRET=
+VITE_API_URL=http://localhost:3000
 ```
-
----
-
-## Running the Application
-
-Start the development server
-
+Run development server:
 ```bash
 npm run dev
 ```
 
-Build the project
-
+### 3. Backend Configuration
 ```bash
-npm run build
+cd ../backend
+npm install
 ```
-
-Run lint checks
-
-```bash
-npm run lint
+Create `backend/.env` with your databases and API credentials:
+```env
+PORT=3000
+FRONTEND_URL=http://localhost:5173
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_access_secret
+JWT_REFRESH_SECRET=your_jwt_refresh_secret
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+SMTP_HOST=your_smtp_host
+SMTP_PORT=your_smtp_port
+SMTP_USER=your_smtp_username
+SMTP_PASS=your_smtp_password
+FIREBASE_SERVICE_ACCOUNT_JSON=your_firebase_credentials_json_string
 ```
-
-Run tests
-
+Run development server:
 ```bash
-npm test
+npm run dev
 ```
 
 ---
 
-## Security
+## Development Scripts
 
-- JWT Authentication
-- Password Encryption with bcrypt
-- Protected API Routes
-- Role-Based Authorization
-- Environment Variable Protection
-- Request Validation
+### Frontend (`frontend/`)
+- `npm run dev`: Launch dev server at `http://localhost:5173`.
+- `npm run build`: Compile and minify production bundles into `dist/`.
+- `npm run preview`: Preview the compiled build.
 
----
-
-## Future Enhancements
-
-- Online Payment Integration
-- Email Notifications
-- SMS Appointment Reminders
-- Medical Records Management
-- Prescription Management
-- Laboratory Reports
-- Real-Time Notifications
-- AI-Based Appointment Recommendations
-- Video Consultation
-- Multi-Hospital Support
-
----
-
-## Deployment
-
-Frontend
-
-- Vercel
-- Netlify
-- Firebase Hosting
-
-Backend
-
-- Render
-- Railway
-- AWS EC2
-- DigitalOcean
-
-Database
-
-- MongoDB Atlas
-
----
-
-## Author
-
-**Kunal Maidkar**
-
-GitHub: https://github.com/kunalcodezz
-
-LinkedIn: Add your LinkedIn profile here
-
----
-
-## Contributing
-
-Contributions are welcome.
-
-1. Fork the repository
-2. Create a feature branch
-
-```bash
-git checkout -b feature-name
-```
-
-3. Commit your changes
-
-```bash
-git commit -m "Add feature"
-```
-
-4. Push to your branch
-
-```bash
-git push origin feature-name
-```
-
-5. Open a Pull Request
-
----
-
-## License
-
-This project is licensed under the MIT License.
+### Backend (`backend/`)
+- `npm run dev`: Watch and run typescript server on `http://localhost:3000` via `tsx`.
+- `npm run build`: Bundle TS files into a compiled CJS server file inside `dist/`.
+- `npm run start`: Start the compiled production server.
+- `npm run seed`: Populate collections with starting records.
+- `npm run test`: Execute the Zod validation test suite.

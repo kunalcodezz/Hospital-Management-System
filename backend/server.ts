@@ -42,7 +42,8 @@ async function startServer() {
   const allowedOrigins = [
     process.env.FRONTEND_URL,
     "http://localhost:5173",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://healnet-hospital.vercel.app"
   ].filter(Boolean) as string[];
 
   app.use(cors({
